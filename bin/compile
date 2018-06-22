@@ -233,11 +233,15 @@ if [[ $BUILD_DIR != '/app' ]]; then
     # Note: .heroku/src is copied in later.
 fi
 
-# Download / Install Python, from pre-build binaries available on Amazon S3.
+# Download / Install Python, from pre-build binaries available on Amazon S3 or from Conda
 # This step also bootstraps pip / setuptools.
 (( start=$(nowms) ))
 # shellcheck source=bin/steps/python
-source "$BIN_DIR/steps/python"
+if [ -f $BUILD_DIR/requirements-conda.txt ]; then
+    source "$BIN_DIR/steps/miniconda"
+else
+    source "$BIN_DIR/steps/python"
+fi
 mtime "python.install.time" "${start}"
 
 # Install Pipenv dependencies, if a Pipfile was provided.
