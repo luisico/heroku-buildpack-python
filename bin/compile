@@ -32,10 +32,8 @@ BUILD_DIR=$1
 CACHE_DIR=$2
 ENV_DIR=$3
 
-APP_DIR=${APP_DIR-:/app}
-
 # Export Path variables, for use in sub-scripts.
-export BUILD_DIR CACHE_DIR ENV_DIR APP_DIR
+export BUILD_DIR CACHE_DIR ENV_DIR
 
 # Set the Buildpack's internet target for downloading Python distributions.
 # The user can provide BUILDPACK_VENDOR_URL to specify a custom target.
@@ -109,6 +107,15 @@ source "$BIN_DIR/utils"
 # (mentioned and explained above)
 # shellcheck source=bin/warnings
 source "$BIN_DIR/warnings"
+
+# Set up APP_DIR (defaults to /app) and make it available to other scripts
+# "$BUILD_DIR" will be used if the string "BUILD_DIR" is passed as the value of
+# APP_DIR from the environment
+APP_DIR=${APP_DIR-/app}
+if [ "$APP_DIR" = "BUILD_DIR" ]; then
+    APP_DIR=$BUILD_DIR
+fi
+export APP_DIR
 
 # Make the directory in which we will create symlinks from the temporary build directory
 # to `$APP_DIR`.
