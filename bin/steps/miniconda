@@ -54,13 +54,15 @@ if [ ! "$SKIP_INSTALL" ]; then
   # Install miniconda
   bash miniconda.sh -p .heroku/python -b | indent
   echo "nomkl" > .heroku/python/conda-meta/pinned
-  conda install nomkl --yes
+  # Workaround until conda 4.6.0 is released (https://github.com/conda/conda/issues/6576)
+  env -u SUDO_UID -u SUDO_GID -u SUDO_COMMAND -u SUDO_USER conda install nomkl --yes
   rm -rf miniconda.sh
 
   # Install conda dependencies
   if [ -f requirements-conda.txt ]; then
       puts-step "Installing dependencies using Conda"
-      conda install --file requirements-conda.txt --yes | indent
+      # Workaround until conda 4.6.0 is released (https://github.com/conda/conda/issues/6576)
+      env -u SUDO_UID -u SUDO_GID -u SUDO_COMMAND -u SUDO_USER conda install --file requirements-conda.txt --yes | indent
   fi
 
   # Clean up the Miniconda installation environment
