@@ -63,7 +63,7 @@ if [ ! "$SKIP_PIPENV_INSTALL" ]; then
         # Install the dependencies.
         if [[ ! -f Pipfile.lock ]]; then
             puts-step "Installing dependencies with Pipenv $PIPENV_VERSION…"
-            $APP_DIR/.heroku/python/bin/pipenv install --system --skip-lock 2>&1 | indent
+            $APP_DIR/.heroku/python/bin/pipenv install --skip-lock 2>&1 | indent
         else
             pipenv-to-pip Pipfile.lock > requirements.txt
             "$BIN_DIR/steps/pip-uninstall"
@@ -71,13 +71,13 @@ if [ ! "$SKIP_PIPENV_INSTALL" ]; then
             openssl dgst -sha256 Pipfile.lock > .heroku/python/Pipfile.lock.sha256
 
             puts-step "Installing dependencies with Pipenv $PIPENV_VERSION…"
-            $APP_DIR/.heroku/python/bin/pipenv install --system --deploy 2>&1 | indent
+            $APP_DIR/.heroku/python/bin/pipenv install --deploy 2>&1 | indent
         fi
 
         # Install the test dependencies, for CI.
         if [ "$INSTALL_TEST" ]; then
             puts-step "Installing test dependencies…"
-            $APP_DIR/.heroku/python/bin/pipenv install --dev --system --deploy 2>&1 | cleanup | indent
+            $APP_DIR/.heroku/python/bin/pipenv install --dev --deploy 2>&1 | cleanup | indent
         fi
     fi
 else
