@@ -182,6 +182,8 @@ cp -R "$CACHE_DIR/.heroku/python-stack" .heroku/ &> /dev/null || true
 cp -R "$CACHE_DIR/.heroku/python-version" .heroku/ &> /dev/null || true
 # A plain text file which contains the current sqlite3 version being used (used for cache busting).
 cp -R "$CACHE_DIR/.heroku/python-sqlite3-version" .heroku/ &> /dev/null || true
+# A plain text file with miniconda version
+cp -R "$CACHE_DIR/.heroku/python-miniconda" .heroku/ &> /dev/null || true
 # Any pre-compiled binaries, provided by the buildpack.
 cp -R "$CACHE_DIR/.heroku/vendor" .heroku/ &> /dev/null || true
 # "editable" installations of code repositories, via pip or pipenv.
@@ -394,6 +396,7 @@ source "$BIN_DIR/steps/eggpath-fix2"
 rm -rf "$CACHE_DIR/.heroku/python"
 rm -rf "$CACHE_DIR/.heroku/python-version"
 rm -rf "$CACHE_DIR/.heroku/python-stack"
+rm -rf "$CACHE_DIR/.heroku/python-miniconda"
 rm -rf "$CACHE_DIR/.heroku/vendor"
 rm -rf "$CACHE_DIR/.heroku/src"
 
@@ -401,6 +404,7 @@ mkdir -p "$CACHE_DIR/.heroku"
 cp -R .heroku/python "$CACHE_DIR/.heroku/"
 cp -R .heroku/python-version "$CACHE_DIR/.heroku/"
 cp -R .heroku/python-stack "$CACHE_DIR/.heroku/" &> /dev/null || true
+cp -R .heroku/python-miniconda "$CACHE_DIR/.heroku/" &> /dev/null || true
 cp -R .heroku/vendor "$CACHE_DIR/.heroku/" &> /dev/null || true
 if [[ -d .heroku/src ]]; then
   cp -R .heroku/src "$CACHE_DIR/.heroku/" &> /dev/null || true

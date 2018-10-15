@@ -69,12 +69,20 @@ if [ ! "$SKIP_INSTALL" ]; then
   puts-step "Cleaning up Miniconda installation"
   conda clean -pt --yes > /dev/null
 
+  # Create conda environment for requested python version
+  conda create --name $PYTHON_VERSION python=${PYTHON_VERSION/python-/} --yes
+  source activate $PYTHON_VERSION
+
   # Record for future reference.
-  echo "$PYTHON_VERSION_MAJOR" > .heroku/miniconda
+  conda info --json | jq -r '.python_version' > .heroku/python-miniconda
   echo "$PYTHON_VERSION" > .heroku/python-version
   echo "$STACK" > .heroku/python-stack
 
   hash -r
+else
+  # Activate environment
+  puts-step "Activating previous installation of miniconda for $PYTHON_VERSION"
+  source activate $PYTHON_VERSION
 fi
 
 hash -r
