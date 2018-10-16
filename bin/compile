@@ -375,6 +375,9 @@ set_default_env PYTHONHASHSEED random
 set_default_env PYTHONPATH "\$APP_DIR"
 # Source conda
 echo "source \$APP_DIR/.heroku/python/etc/profile.d/conda.sh" >> "$PROFILE_PATH"
+# Activate conda environment
+set_env PYTHON_VERSION $(cat runtime.txt)
+echo "source activate \$PYTHON_VERSION" >> "$PROFILE_PATH"
 # Force pipenv environments in project
 set_env PIPENV_VENV_IN_PROJECT 1
 
