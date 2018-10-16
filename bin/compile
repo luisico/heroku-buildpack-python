@@ -368,15 +368,15 @@ set_default_env PYTHONHASHSEED random
 # Tell Python to look for Python modules in the $APP_DIR dir. Don't change this.
 set_default_env PYTHONPATH "\$APP_DIR"
 # Source conda
-echo "source $APP_DIR/.heroku/python/etc/profile.d/conda.sh" >> "$PROFILE_PATH"
+echo "source \$APP_DIR/.heroku/python/etc/profile.d/conda.sh" >> "$PROFILE_PATH"
 
 # Python expects to be in $APP_DIR, if at runtime, it is not, set
 # up symlinks… this can occur when the subdir buildpack is used.
 cat <<EOT >> "$PROFILE_PATH"
-if [[ \$HOME != "$APP_DIR" ]]; then
-    mkdir -p $APP_DIR/.heroku
-    ln -nsf "\$HOME/.heroku/python" $APP_DIR/.heroku/python
-    ln -nsf "\$HOME/.heroku/vendor" $APP_DIR/.heroku/vendor
+if [[ \$HOME != "\$APP_DIR" ]]; then
+    mkdir -p \$APP_DIR/.heroku
+    ln -nsf "\$HOME/.heroku/python" \$APP_DIR/.heroku/python
+    ln -nsf "\$HOME/.heroku/vendor" \$APP_DIR/.heroku/vendor
 fi
 EOT
 
