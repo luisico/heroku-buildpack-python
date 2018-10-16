@@ -191,6 +191,10 @@ if [[ -d "$CACHE_DIR/.heroku/src" ]]; then
   cp -R "$CACHE_DIR/.heroku/src" .heroku/ &> /dev/null || true
 fi
 
+# The pipenv environment
+cp -R "$CACHE_DIR/.venv" ./ &> /dev/null || true
+update-symlinks "$BUILD_DIR/.venv" "/BUILDPACK_CACHED" "$BUILD_DIR"
+
 # The pre_compile hook. Customers rely on this. Don't remove it.
 # This part of the code is used to allow users to customize their build experience
 # without forking the buildpack by providing a `bin/pre_compile` script, which gets
@@ -251,6 +255,8 @@ fi
 # shellcheck source=bin/steps/python
 if [ -f $BUILD_DIR/requirements-conda.txt ]; then
     source "$BIN_DIR/steps/miniconda"
+    # Force pipenv set the environment in the project's directory
+    export PIPENV_VENV_IN_PROJECT=1
 else
     source "$BIN_DIR/steps/python"
 fi
@@ -369,6 +375,8 @@ set_default_env PYTHONHASHSEED random
 set_default_env PYTHONPATH "\$APP_DIR"
 # Source conda
 echo "source \$APP_DIR/.heroku/python/etc/profile.d/conda.sh" >> "$PROFILE_PATH"
+# Force pipenv environments in project
+set_env PIPENV_VENV_IN_PROJECT 1
 
 # Python expects to be in $APP_DIR, if at runtime, it is not, set
 # up symlinks… this can occur when the subdir buildpack is used.
@@ -399,6 +407,7 @@ rm -rf "$CACHE_DIR/.heroku/python-stack"
 rm -rf "$CACHE_DIR/.heroku/python-miniconda"
 rm -rf "$CACHE_DIR/.heroku/vendor"
 rm -rf "$CACHE_DIR/.heroku/src"
+rm -rf "$CACHE_DIR/.venv"
 
 mkdir -p "$CACHE_DIR/.heroku"
 cp -R .heroku/python "$CACHE_DIR/.heroku/"
@@ -409,6 +418,8 @@ cp -R .heroku/vendor "$CACHE_DIR/.heroku/" &> /dev/null || true
 if [[ -d .heroku/src ]]; then
   cp -R .heroku/src "$CACHE_DIR/.heroku/" &> /dev/null || true
 fi
+cp -R .venv "$CACHE_DIR/" &> /dev/null || true
+update-symlinks "$CACHE_DIR/.venv" "$BUILD_DIR" "/BUILDPACK_CACHED"
 
 # Measure the size of the Python installation.
 # shellcheck disable=SC2119

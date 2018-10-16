@@ -95,3 +95,14 @@ python_sqlite3_check() {
   ( python2_check "$VERSION" && version_gte "$VERSION" "$MIN_PYTHON_2" ) \
     || ( python3_check "$VERSION" && version_gte "$VERSION" "$MIN_PYTHON_3" )
 }
+
+# Update symlinks in directory that match source string with target string
+update-symlinks() {
+  declare directory="$1" source="$2" target="$3"
+
+  for file in $(find $directory -type l -lname "$source/*"); do
+    link=$(readlink $file)
+    rm $file
+    ln -sT $(echo $link | sed -e "s@$source@$target@") $file
+  done
+}
