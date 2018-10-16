@@ -373,13 +373,6 @@ set_default_env LANG en_US.UTF-8
 set_default_env PYTHONHASHSEED random
 # Tell Python to look for Python modules in the $APP_DIR dir. Don't change this.
 set_default_env PYTHONPATH "\$APP_DIR"
-# Source conda
-echo "source \$APP_DIR/.heroku/python/etc/profile.d/conda.sh" >> "$PROFILE_PATH"
-# Activate conda environment
-set_env PYTHON_VERSION $(cat runtime.txt)
-echo "source activate \$PYTHON_VERSION" >> "$PROFILE_PATH"
-# Force pipenv environments in project
-set_env PIPENV_VENV_IN_PROJECT 1
 
 # Python expects to be in $APP_DIR, if at runtime, it is not, set
 # up symlinks… this can occur when the subdir buildpack is used.
@@ -390,6 +383,18 @@ if [[ \$HOME != "\$APP_DIR" ]]; then
     ln -nsf "\$HOME/.heroku/vendor" \$APP_DIR/.heroku/vendor
 fi
 EOT
+
+# Conda/pipenv
+if [ -f $BUILD_DIR/requirements-conda.txt ]; then
+  # Source conda
+  echo -e "\n# Activate conda and pipenv environments" >> "$PROFILE_PATH"
+  echo "unset PYTHONHOME" >> "$PROFILE_PATH"
+  echo "source \$APP_DIR/.heroku/python/etc/profile.d/conda.sh" >> "$PROFILE_PATH"
+  # Activate conda environment
+  echo "source activate $(cat runtime.txt)" >> "$PROFILE_PATH"
+  # Force pipenv environments in project
+  set_env PIPENV_VENV_IN_PROJECT 1
+fi
 
 # Install sane-default script for $WEB_CONCURRENCY and $FORWARDED_ALLOW_IPS.
 cp "$ROOT_DIR/vendor/WEB_CONCURRENCY.sh" "$WEB_CONCURRENCY_PROFILE_PATH"
