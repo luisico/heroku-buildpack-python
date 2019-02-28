@@ -100,9 +100,11 @@ python_sqlite3_check() {
 update-symlinks() {
   declare directory="$1" source="$2" target="$3"
 
-  for file in $(find $directory -type l -lname "$source/*"); do
-    link=$(readlink $file)
-    rm $file
-    ln -sT $(echo $link | sed -e "s@$source@$target@") $file
-  done
+  if [ -d "$directory" ]; then
+    for file in $(find $directory -type l -lname "$source/*"); do
+      link=$(readlink $file)
+      rm $file
+      ln -sT $(echo $link | sed -e "s@$source@$target@") $file
+    done
+  fi
 }
