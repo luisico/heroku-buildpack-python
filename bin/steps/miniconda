@@ -70,7 +70,8 @@ if [ ! "$SKIP_INSTALL" ]; then
   conda clean -pt --yes > /dev/null
 
   # Create conda environment for requested python version
-  conda create --name $PYTHON_VERSION python=${PYTHON_VERSION/python-/} --yes
+  # Workaround until conda 4.6.0 is released (https://github.com/conda/conda/issues/6576)
+  env -u SUDO_UID -u SUDO_GID -u SUDO_COMMAND -u SUDO_USER conda create --name $PYTHON_VERSION python=${PYTHON_VERSION/python-/} --yes
   source activate $PYTHON_VERSION
 
   # Record for future reference.
