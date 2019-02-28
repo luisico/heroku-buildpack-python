@@ -127,7 +127,7 @@ mkdir -p $APP_DIR/.heroku
 # buildpack machinery: an export script, and a number of `.profile.d` scripts. This
 # section declares the locations of those files and targets.
 PROFILE_PATH="$BUILD_DIR/.profile.d/python.sh"
-EXPORT_PATH="$BIN_DIR/../export"
+EXPORT_PATH="$BUILD_DIR/.profile.d/export"
 GUNICORN_PROFILE_PATH="$BUILD_DIR/.profile.d/python.gunicorn.sh"
 WEB_CONCURRENCY_PROFILE_PATH="$BUILD_DIR/.profile.d/WEB_CONCURRENCY.sh"
 
