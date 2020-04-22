@@ -45,7 +45,7 @@ if [ ! "$SKIP_INSTALL" ]; then
   export PATH=".heroku/python/bin:$PATH"
 
   # Download miniconda
-  if ! curl -s $MINICONDA > miniconda.sh; then
+  if ! curl -L -s $MINICONDA > miniconda.sh; then
     puts-warn "Requested miniconda ($PYTHON_VERSION_MAJOR) is not available."
     puts-warn "Aborting."
     exit 1
